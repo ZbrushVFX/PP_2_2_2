@@ -1,27 +1,27 @@
 package web.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import java.util.ArrayList;
-import java.util.List;
-import web.model.Car;
+import org.springframework.web.bind.annotation.RequestParam;
+import web.service.CarService;
 
 @Controller
 @RequestMapping("/cars")
 public class CarController {
 
-    @GetMapping
-    public String getCars(Model model) {
-        List<Car> cars = new ArrayList<>();
-        cars.add(new Car("Vaz", "Red", 100));
-        cars.add(new Car("Taz", "White", 200));
-        cars.add(new Car("Gaz", "Blue", 300));
-        cars.add(new Car("SyperTaz", "Black", 400));
-        cars.add(new Car("KOPbITO", "Invisible", 1000));
+    private final CarService carService;
 
-        model.addAttribute("cars", cars);
+    @Autowired
+    public CarController(CarService carService) {
+        this.carService = carService;
+    }
+
+    @GetMapping
+    public String getCars(@RequestParam(value = "count", defaultValue = "5") int count, Model model) {
+        model.addAttribute("cars", carService.getCarsList(count));
         return "cars";
     }
 }
